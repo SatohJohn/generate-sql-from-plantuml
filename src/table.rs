@@ -7,15 +7,29 @@ pub struct Table {
 
 impl Table {
     
+    /// Tableを作成し返却する
+    /// # Arguments
+    /// - `content`: entity全体
     pub fn new(content: String) -> Option<Table> {
-        let re = Regex::new(r"([a-zA-Z]+) ([a-zA-Z]+) (.+)").unwrap();
+        let re = Regex::new(r"([a-zA-Z]+) ([a-zA-Z]+) \{(.+)\}").unwrap();
         return re.captures(content.as_str())
             .map(|captured| {
-                return Table {
-                    name: captured.get(2).map_or(String::from(""), |m| m.as_str().to_string()),
-                    content: captured.get(3).map_or(String::from(""), |m| m.as_str().to_string())
-                }
+                return Table::of(
+                    captured.get(2).map_or(String::from(""), |m| m.as_str().to_string()),
+                    captured.get(3).map_or(String::from(""), |m| m.as_str().to_string())
+                );
             });
+    }
+    
+    /// Tableを作成し返却する
+    /// # Arguments
+    /// - `name`: entity name
+    /// - `content`: entityの中身
+    pub fn of(name: String, content: String) -> Table {
+        return Table {
+            name,
+            content
+        }
     }
 
     pub fn get_name(self) -> String {

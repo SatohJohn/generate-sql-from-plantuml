@@ -21,8 +21,8 @@ fn main() {
         return last.map(|l| (pos, l));
     }).flatten().map(|(start, end)| {
         let content = contents.split("\n").skip(start).take(end);
-        let table = table::Table::new(content.collect());
-        println!("{}", table.get_name());
+        let maybeCreatedTable = table::Table::new(content.collect());
+        maybeCreatedTable.map(|t| println!("{}", &t.get_name()));
     });
 
 }

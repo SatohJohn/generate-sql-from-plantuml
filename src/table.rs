@@ -11,7 +11,7 @@ impl Table {
     /// # Arguments
     /// - `content`: entity全体
     pub fn new(content: String) -> Option<Table> {
-        let re = Regex::new(r"([a-zA-Z]+) ([a-zA-Z]+) \{(.+)\}").unwrap();
+        let re = Regex::new(r"(entity|class) (\w+) \{([\s\S]*)\}").unwrap();
         return re.captures(content.as_str())
             .map(|captured| {
                 return Table::of(
@@ -32,8 +32,12 @@ impl Table {
         }
     }
 
-    pub fn get_name(self) -> String {
-        self.name
+    pub fn get_name(&self) -> String {
+        self.name.clone()
+    }
+
+    pub fn get_content(&self) -> String {
+        self.content.clone()
     }
 }
 
@@ -53,5 +57,25 @@ mod tests {
         let actual = Table::new(String::from("entity fuga { }"));
         assert_eq!(true, actual.is_some());
         assert_eq!("fuga", actual.unwrap().get_name());
+    }
+
+    #[test]
+    fn table_name_is_numeric() {
+        let actual = Table::new(String::from("entity fuga13 { }"));
+        assert_eq!(true, actual.is_some());
+        assert_eq!("fuga13", actual.unwrap().get_name());
+    }
+
+    #[test]
+    fn table_content_is_multiline() {
+        let actual = Table::new(String::from("entity piyo {
+            hogehoge
+        }"));
+        assert_eq!(true, actual.is_some());
+        let a = actual.unwrap();
+        assert_eq!("piyo", a.get_name());
+        assert_eq!("
+            hogehoge
+        ", a.get_content());
     }
 }

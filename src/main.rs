@@ -2,6 +2,7 @@ use std::env;
 use std::fs;
 
 mod table;
+mod test;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -21,8 +22,8 @@ fn main() {
         return last.map(|l| (pos, l));
     }).flatten().map(|(start, end)| {
         let content = contents.split("\n").skip(start).take(end);
-        let maybeCreatedTable = table::Table::new(content.collect());
-        maybeCreatedTable.map(|t| println!("{}", &t.get_name()));
+        let table = table::Table::new(content.collect());
+        table.map(|t| t.convert_to_sql())
     });
 
 }
